@@ -1,13 +1,13 @@
-// Address: project/src/components/DepartmentList.tsx
 import { useState } from 'react';
-import { List, ListItem, ListItemButton, ListItemText, Checkbox, Collapse, Container, Button } from '@mui/material';
-import { ExpandMore, ExpandLess } from '@mui/icons-material';
+import { List, ListItem, ListItemButton, ListItemText, Checkbox, Collapse, Container, Button, Snackbar, SnackbarContent, IconButton, Typography } from '@mui/material';
+import { ExpandMore, ExpandLess, CheckCircle } from '@mui/icons-material';
 import { departments, subDepartments } from './departmentData';
 
 function NavBar() {
   const [selectedDepartments, setSelectedDepartments] = useState<{ [key: number]: boolean }>({});
   const [selectedSubDepartments, setSelectedSubDepartments] = useState<{ [key: number]: boolean }>({});
   const [expandedDepartments, setExpandedDepartments] = useState<{ [key: number]: boolean }>({});
+  const [showConfirmation, setShowConfirmation] = useState(false); // State to manage confirmation message visibility
 
   const handleDepartmentClick = (departmentId: number) => {
     setExpandedDepartments((prevExpanded) => ({ ...prevExpanded, [departmentId]: !prevExpanded[departmentId] }));
@@ -37,6 +37,7 @@ function NavBar() {
   const handleSubmit = () => {
     console.log('Selected Departments:', selectedDepartments);
     console.log('Selected Sub-Departments:', selectedSubDepartments);
+    setShowConfirmation(true); // Show confirmation message
   };
 
   return (
@@ -73,6 +74,28 @@ function NavBar() {
       <Button variant="contained" onClick={handleSubmit}>
         Submit
       </Button>
+
+      {/* Confirmation Snackbar */}
+      <Snackbar
+        open={showConfirmation}
+        autoHideDuration={6000}
+        onClose={() => setShowConfirmation(false)}
+        anchorOrigin={{ vertical: 'bottom', horizontal: 'right' }}
+      >
+        <SnackbarContent
+          message={
+            <Typography variant="body1" sx={{ display: 'flex', alignItems: 'center' }}>
+              <CheckCircle sx={{ mr: 1 }} />
+              Data Collected, Thank You
+            </Typography>
+          }
+          action={
+            <IconButton size="small" color="inherit" onClick={() => setShowConfirmation(false)}>
+              <ExpandMore fontSize="small" />
+            </IconButton>
+          }
+        />
+      </Snackbar>
     </Container>
   );
 }
