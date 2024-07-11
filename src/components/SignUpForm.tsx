@@ -1,5 +1,5 @@
 // Address: project/src/components/SignUpForm.tsx
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { TextField, Button , Box , Typography } from '@mui/material';
 
 interface SignUpFormProps {
@@ -12,14 +12,28 @@ function SignUpForm({ onSubmit }: SignUpFormProps) {
     const [email, setEmail] = useState('');
     const [error, setError] = useState('');
 
-    const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
-        event.preventDefault();
-        if (!name || !phone || !email) {
-            setError('All fields are required.');
-            return;
-        }
-        onSubmit({ name, phone, email });
-    };
+// LOCAL STORAGE SETUP
+
+const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
+    event.preventDefault();
+    if (!name || !phone || !email) {
+      setError('All fields are required.');
+      return;
+    }
+    onSubmit({ name, phone, email });
+    localStorage.setItem('formData', JSON.stringify({ name, phone, email }));
+  };
+  
+  // Retrieve the data from localStorage with type safety
+  useEffect(() => {
+    const storedData = localStorage.getItem('formData');
+    if (storedData) {
+      const { name, phone, email } = JSON.parse(storedData);
+      setName(name);
+      setPhone(phone);
+      setEmail(email);
+    }
+  }, []);
 
     return (
          
